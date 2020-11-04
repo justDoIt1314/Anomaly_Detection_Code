@@ -19,7 +19,7 @@ import math
 from collections import OrderedDict
 import copy
 import time
-from model.dataset import PedDataset,IForestDetect,TrainDataset,get_abnor_rotio,get_nor_rotio
+from model.dataset import PedDataset,Initial_Anomaly_Detection,TrainDataset,get_abnor_rotio,get_nor_rotio
 from model.final_future_prediction_with_memory_spatial_sumonly_weight_ranking_top1 import *
 from sklearn.metrics import roc_auc_score
 from utils import *
@@ -32,6 +32,7 @@ parser = argparse.ArgumentParser(description="Anomaly_Detection")
 parser.add_argument('--gpus', nargs='+', type=str, help='gpus')
 parser.add_argument('--batch_size', type=int, default=4, help='batch size for training')
 parser.add_argument('--test_batch_size', type=int, default=1, help='batch size for test')
+parser.add_argument('--normal_scale', type=float, default=0.2, help='Scales of Normal Representatives')
 parser.add_argument('--h', type=int, default=256, help='height of input images')
 parser.add_argument('--w', type=int, default=256, help='width of input images')
 parser.add_argument('--c', type=int, default=3, help='channel of input images')
@@ -111,9 +112,14 @@ def get_nor_abnor_RecontructLoss(train_folder,indices_nor,indices_abnor):
             mse_feas = compactness_loss.item()
             nor_mse_imgs_append = np.append(nor_mse_imgs_append,mse_imgs)
             nor_mse_feas_append = np.append(nor_mse_feas_append,mse_feas)
-    print("rec abnor/nor: ",np.mean(abnor_mse_imgs_append)/np.mean(nor_mse_imgs_append))
+    abnor_mse = np.mean(abnor_mse_imgs_append)
+    nor_mse = np.mean(nor_mse_imgs_append)
+    ##### 在特殊情况，全为正常帧时
+    if abnor_mse < 4*nor_mse:
+        abnor_mse = 4*nor_mse
+    print("rec abnor/nor: ",abnor_mse/nor_mse)
     
-    return np.mean(nor_mse_imgs_append),np.mean(abnor_mse_imgs_append)
+    return nor_mse,abnor_mse
 
 def displayAnomalyArea(out,img,mse_imgs,pre_loss,k):
     img = img.numpy()
@@ -164,9 +170,10 @@ if __name__ == "__main__":
     #test_folder = 'X:\\Anomaly_Dataset\\UCSD_ped1_ped2\\ped2\\training\\frames'
     test_folder = args.dataset_path+args.dataset_type+"\\testing\\frames"
     train_folder = args.dataset_path+args.dataset_type+"\\training\\frames"
-    target_folder = train_folder
+    train_and_test_folder = args.dataset_path+args.dataset_type+"\\train_and_test\\frames"
+    target_folder = train_and_test_folder
     # Get the input for the upper and lower branches
-    indices_nor,indices_abnor = IForestDetect(target_folder,args.labels,0.05,0.01)
+    indices_nor,indices_abnor = Initial_Anomaly_Detection(target_folder,args.labels,args.normal_scale/4,0.01)
     # Get the average prediction loss  of the upper and lower branches
     nor_threshold,abnor_threshold = get_nor_abnor_RecontructLoss(target_folder,indices_nor,indices_abnor)
     

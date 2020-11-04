@@ -62,7 +62,7 @@ def get_Labels_list(test_folder = "X:\\Anomaly_Dataset\\UCSD_Anomaly_Dataset.v1p
 
 
 
-def IForestDetect(video_folder,labels_path,nor_ratio=0.2,abnor_ratio=0.01):
+def Initial_Anomaly_Detection(video_folder,labels_path,nor_ratio=0.2,abnor_ratio=0.01):
     #device = torch.device("cuda:0" if torch.cuda.is_available() else 'cpu')
     
     # model = resnest50(pretrained=False)

@@ -20,7 +20,7 @@ import math
 from collections import OrderedDict
 import copy
 import time
-from model.dataset import PedDataset,TrainDataset,IForestDetect,get_Labels_list,get_nor_rotio,get_abnor_rotio
+from model.dataset import PedDataset,TrainDataset,Initial_Anomaly_Detection,get_Labels_list,get_nor_rotio,get_abnor_rotio
 from model.final_future_prediction_with_memory_spatial_sumonly_weight_ranking_top1 import *
 from sklearn.metrics import roc_auc_score
 from utils import *
@@ -35,6 +35,7 @@ parser.add_argument('--gpus', nargs='+', type=str, help='gpus')
 parser.add_argument('--batch_size', type=int, default=1, help='batch size for training')
 parser.add_argument('--test_batch_size', type=int, default=1, help='batch size for test')
 parser.add_argument('--epochs', type=int, default=30, help='number of epochs for training')
+parser.add_argument('--normal_scale', type=float, default=0.2, help='Scales of Normal Representatives')
 parser.add_argument('--loss_compact', type=float, default=0.1, help='weight of the feature compactness loss')
 parser.add_argument('--loss_separate', type=float, default=0.1, help='weight of the feature separateness loss')
 parser.add_argument('--h', type=int, default=256, help='height of input images')
@@ -567,7 +568,8 @@ if __name__ == "__main__":
 
     train_folder = args.dataset_path+args.dataset_type+"\\training\\frames"
     test_folder = args.dataset_path+args.dataset_type+"\\testing\\frames"
-    target_folder = train_folder
+    train_and_test_folder = args.dataset_path+args.dataset_type+"\\train_and_test\\frames"
+    target_folder = train_and_test_folder
     isTrain = False
     ratio = 0.02
     human_indices_nor_path = "./data/"+args.dataset_type+"_human_50%indices_nor.npy"
@@ -579,7 +581,7 @@ if __name__ == "__main__":
     # else:
     
     # get representatives of normal and abnormal data
-    indices_nor,indices_abnor = IForestDetect(target_folder,args.labels,0.2,0.01)
+    indices_nor,indices_abnor = IForestDetect(target_folder,args.labels,args.normal_scale,0.01)
     
     print("hello")
     log_dir = os.path.join('./exp', args.dataset_type, args.exp_dir)

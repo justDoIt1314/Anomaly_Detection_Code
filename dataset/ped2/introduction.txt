@@ -1,1 +1,1 @@
-For the convenience of training and testing, training folder includes training sets and test sets
+For the convenience of training and testing, train_and_test folder includes training sets and testing sets，The last 12 videos are test sets。
