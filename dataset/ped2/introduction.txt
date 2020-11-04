@@ -1,0 +1,1 @@
+For the convenience of training and testing, training folder includes training sets and test sets
