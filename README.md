@@ -13,9 +13,8 @@ This is the implementation of the paper "Three-branch Siamese Network for Anomal
 * Sklearn
 
 ## Datasets
-* USCD[[dataset](https://github.com/StevenLiuWen/ano_pred_cvpr2018)]
-* CUHK Avenue [[dataset](https://github.com/StevenLiuWen/ano_pred_cvpr2018)]
-* Subway-entrance [[dataset](https://drive.google.com/drive/u/0/folders/0B8GCEsD4YSIkajlTSTB2aGxYNGs)]
+Link：https://pan.baidu.com/s/1I4q4tHuO7R8p30pzqaaBpw 
+Fetch Code：yzj2 
 
 Download the datasets into ``dataset`` folder, like ``./dataset/ped2/``
 
@@ -24,7 +23,7 @@ In addition, our parameters have been configured by default, and we can complete
 ## Training
 * The training and testing codes are based on prediction method
 ```Windows PowerShell
-git clone https://github.com/cvlab-yonsei/projects
+git clone https://github.com/justDoIt1314/Anomaly_Detection_Code
 To the current directory of the project
 python Evaluate.py # for testing
 ```
