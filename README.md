@@ -24,7 +24,7 @@ In addition, our parameters have been configured by default, and we can complete
 * The training and testing codes are based on prediction method
 ```Windows PowerShell
 To the current directory of the project
-python Train.py # for tesng
+python Train.py # for training
 ```
 
 
