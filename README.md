@@ -23,21 +23,17 @@ In addition, our parameters have been configured by default, and we can complete
 ## Training
 * The training and testing codes are based on prediction method
 ```Windows PowerShell
-git clone https://github.com/justDoIt1314/Anomaly_Detection_Code
 To the current directory of the project
-python Evaluate.py # for testing
+python Train.py # for tesng
 ```
 
 
 ## Pre-trained model and memory items
-* Download our pre-trained model and memory items <br>Link: [[model and items](https://drive.google.com/file/d/11f65puuljkUa0Z4W0VtkF_2McphS02fq/view?usp=sharing)]
+* Download our pre-trained model and memory items <br>Link: [[model and items](https://pan.baidu.com/s/1YdFmyDAtWuD6_6hjiKXROg)]
+Fetch Code：f3y8 
 * Note that, these are from training with the Ped2 dataset
 
 ## Evaluation
-* Test the model with our pre-trained model and memory items
-```bash
-python Evaluate.py --model_dir pretrained_model.pth --m_items_dir m_items.pt
-```
 * Test your own model
 ```Windows PowerShell
 python Evaluate.py --model_dir your_model.pth --m_items_dir your_m_items.pt
