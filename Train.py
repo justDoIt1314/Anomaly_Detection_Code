@@ -32,7 +32,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description="MNAD")
 parser.add_argument('--gpus', nargs='+', type=str, help='gpus')
-parser.add_argument('--batch_size', type=int, default=1, help='batch size for training')
+parser.add_argument('--batch_size', type=int, default=2, help='batch size for training')
 parser.add_argument('--test_batch_size', type=int, default=1, help='batch size for test')
 parser.add_argument('--epochs', type=int, default=30, help='number of epochs for training')
 parser.add_argument('--normal_scale', type=float, default=0.2, help='Scales of Normal Representatives')
@@ -186,9 +186,9 @@ def train_all_epochs(epochs,indices,train_folder,test_folder,indices_nor,indices
                     scores.append(0.2+0.8*(score-nor_threshold)/(abnor_threshold-nor_threshold))
             my_rec_scores.extend(scores)
             loss = loss_pixel + args.loss_compact * compactness_loss + args.loss_separate * separateness_loss
-            writer.add_scalar("loss_pixel", loss_pixel.item(),j + epoch * len_train_batch)
-            writer.add_scalar("compactness_loss", compactness_loss.item(),j + epoch * len_train_batch)
-            writer.add_scalar("separateness_loss", separateness_loss.item(),j + epoch * len_train_batch)
+            writer.add_scalar("Prediction loss", loss_pixel.item(),j + epoch * len_train_batch)
+            writer.add_scalar("Feature compactness loss", compactness_loss.item(),j + epoch * len_train_batch)
+            writer.add_scalar("Feature separateness loss", separateness_loss.item(),j + epoch * len_train_batch)
             writer.add_scalar("loss", loss.item(), j + epoch * len_train_batch)
             if j % 5 == 0:
                 print("epoch:{0} batch {1}/{2} loss:{3} score:{4}".format(epoch,j,len_train_batch,loss.item(),scores))
@@ -205,16 +205,16 @@ def train_all_epochs(epochs,indices,train_folder,test_folder,indices_nor,indices
         print(m_items)       
         print('----------------------------------------')
 
-        auc = evaluate(test_folder,model_path,keys_path,nor_threshold,abnor_threshold,model=model,m_items=m_items,isBymodel=True)
+        # auc = evaluate(test_folder,model_path,keys_path,nor_threshold,abnor_threshold,model=model,m_items=m_items,isBymodel=True)
         
-        print(auc)
-        if auc > max_auc:
-            max_auc = auc
-            torch.save(model, os.path.join(log_dir, 'model'+'_'+str(epoch)+'.pth'))
-            torch.save(m_items, os.path.join(log_dir, 'keys'+'_'+str(epoch)+'.pt'))
-        if epoch > epochs-3:
-            torch.save(model, os.path.join(log_dir, 'model'+'_'+str(epoch)+'.pth'))
-            torch.save(m_items, os.path.join(log_dir, 'keys'+'_'+str(epoch)+'.pt'))
+        # print(auc)
+        # if auc > max_auc:
+        #     max_auc = auc
+        #     torch.save(model, os.path.join(log_dir, 'model'+'_'+str(epoch)+'.pth'))
+        #     torch.save(m_items, os.path.join(log_dir, 'keys'+'_'+str(epoch)+'.pt'))
+        # if epoch > epochs-3:
+        #     torch.save(model, os.path.join(log_dir, 'model'+'_'+str(epoch)+'.pth'))
+        #     torch.save(m_items, os.path.join(log_dir, 'keys'+'_'+str(epoch)+'.pt'))
 
     model.zero_grad()
     
@@ -581,7 +581,7 @@ if __name__ == "__main__":
     # else:
     
     # get representatives of normal and abnormal data
-    indices_nor,indices_abnor = IForestDetect(target_folder,args.labels,args.normal_scale,0.01)
+    indices_nor,indices_abnor = Initial_Anomaly_Detection(target_folder,args.labels,args.normal_scale,0.01)
     
     print("hello")
     log_dir = os.path.join('./exp', args.dataset_type, args.exp_dir)

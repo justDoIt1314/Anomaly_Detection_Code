@@ -233,6 +233,7 @@ if __name__ == "__main__":
     m_items_test = m_items.clone()
     mse_imgs_append = []
     mse_feas_append = []
+    scores = []
     model.eval()
     with torch.no_grad():
         for k,(img) in enumerate(test_batch):
@@ -246,6 +247,10 @@ if __name__ == "__main__":
             outputs, feas, updated_feas, m_items_test, softmax_score_query, softmax_score_memory, _, _, _, compactness_loss = model.forward(imgs[:,0:3*4], m_items_test, False)
             err_mse_imgs = torch.mean(loss_func_mse((outputs[0]+1)/2, (imgs[0,3*4:]+1)/2)).item()
             mse_imgs = torch.mean(loss_func_mse(outputs, imgs[:,12:])).item()
+            
+            # decision_function
+            score = decision_function(mse_imgs,nor_threshold,abnor_threshold)
+            scores.append(score)
             # if labels_list[k] == 1:
             # displayAnomalyArea(outputs[0],img[0,12:],250*nor_threshold,loss_func_mse(outputs[0], imgs[0,12:]),k)
             mse_feas = compactness_loss.item()
@@ -264,11 +269,12 @@ if __name__ == "__main__":
 
     
 
-    ########################### Decision Network  ##################################################
-    my_rec_score = update_anomaly_score(mse_imgs_append,nor_threshold,abnor_threshold)    
+    ########################### Decision Function  ##################################################
+    my_rec_score = update_anomaly_score(mse_imgs_append,nor_threshold,abnor_threshold) 
+    my_rec_score = np.asarray(scores)   
     my_accuray = roc_auc_score(labels_list,my_rec_score)
     my_accuray_test = roc_auc_score(labels_list[-1962:],my_rec_score[-1962:])
-    print("Decision-Network: The result of",args.dataset_type)
+    print("Decision-Function: The result of",args.dataset_type)
     print("Full dataset:")
     print('AUC: ', my_accuray*100, '%')
     print("testing dataset:")

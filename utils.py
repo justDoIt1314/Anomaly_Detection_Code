@@ -101,6 +101,14 @@ def update_anomaly_score(scores,nor_threshold,abnor_threshold):
             res = np.append(res,0.2+0.6*(score-nor_threshold)/(abnor_threshold-nor_threshold))
     return res
 
+def decision_function(score,nor_threshold,abnor_threshold):
+    _score = 0.2+0.6*(score-nor_threshold)/(abnor_threshold-nor_threshold)
+    if _score < 0:
+        _score = 0
+    elif _score >1:
+        _score = 1
+    return _score
+
 def update_anomaly_score_2(scores,nor_threshold,abnor_threshold,abnor_max):
     
     res = []
@@ -111,6 +119,17 @@ def update_anomaly_score_2(scores,nor_threshold,abnor_threshold,abnor_max):
             res = np.append(res,0.75+0.25*(score-abnor_threshold)/(abnor_max-abnor_threshold))
         else:
             res = np.append(res,0.25+0.5*(score-nor_threshold)/(abnor_threshold-nor_threshold))
+    return res
+
+def update_anomaly_score_3(scores,nor_threshold,abnor_threshold):
+    res = []
+    for score in scores:
+        _score = 0.2+0.6*(score-nor_threshold)/(abnor_threshold-nor_threshold)
+        if _score < 0:
+            _score = 0
+        elif _score >1:
+            _score = 1
+        res = np.append(res,_score)
     return res
 
 def anomaly_score(psnr, max_psnr, min_psnr):
