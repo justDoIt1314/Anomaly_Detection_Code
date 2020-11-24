@@ -24,7 +24,7 @@ In addition, our parameters have been configured by default, and we can complete
 Link：https://pan.baidu.com/s/1HATgbyw3x_6pVeSH2RBrfw 
 Fetch Code：urhz 
 
-Initial anomaly detection methods, including PCA-Rec and iForest, are implemented by scikit-learn. Since PCARec and iForest only handle eigenvectors, the video frames
+Initial anomaly detection methods, including PCA-Rec and iForest, are implemented by scikit-learn. Since PCA-Rec and iForest only handle eigenvectors, the video frames
 should be transferred into them. More specifically, we use the last connection layer of a pre-trained ResNet-50 to extract the features
 ## Training
 * The training and testing codes are based on prediction method
